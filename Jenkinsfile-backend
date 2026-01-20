@@ -10,7 +10,7 @@
  */
 
 pipeline {
-    agent none  // Multi-agent setup - specify per stage
+    agent slave  // Multi-agent setup - specify per stage
     
     environment {
         // Docker Hub credentials (configure in Jenkins Credentials)
@@ -30,7 +30,7 @@ pipeline {
     
     stages {
         stage('Checkout') {
-            agent any
+            agent slave
             steps {
                 echo '📥 Checking out source code...'
                 checkout scm
@@ -112,7 +112,7 @@ pipeline {
         stage('Docker Operations') {
             parallel {
                 stage('Build Docker Image') {
-                    agent any
+                    agent slave
                     steps {
                         echo '🐳 Building Docker image...'
                         dir('backend') {
@@ -125,7 +125,7 @@ pipeline {
                 }
                 
                 stage('Security Scan') {
-                    agent any
+                    agent slave
                     steps {
                         echo '🔒 Running security scan...'
                         // This is a placeholder for tools like Trivy, Snyk, etc.
@@ -139,7 +139,7 @@ pipeline {
         }
         
         stage('Test Docker Image') {
-            agent any
+            agent slave
             steps {
                 echo '🧪 Testing Docker image...'
                 script {
@@ -174,7 +174,7 @@ pipeline {
         }
         
         stage('Push to Registry') {
-            agent any
+            agent slave
             when {
                 branch 'main'
             }
@@ -190,7 +190,7 @@ pipeline {
         }
         
         stage('Deploy') {
-            agent any
+            agent slave
             when {
                 branch 'main'
             }
